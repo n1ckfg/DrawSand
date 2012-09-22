@@ -1,9 +1,14 @@
 //  based on Rotate by Jared "BlueThen" www.bluethen.com
+
+int sW = 960;
+int sH = 540;
+int numParticles = 400;
+
 color bgColor=color(255);
 int bgAlpha = 80;
 //basics
-int particleCountX = 200;  // default 40
-int particleCountY = 200;  // default 30
+int particleCountX = int(numParticles/2);  // default 40
+int particleCountY = int(numParticles/2);
 int xStart = 0;  // default 18
 int yStart = 0;  // default 16
 int xPos = xStart;
@@ -29,21 +34,23 @@ int counterRelease = 0;
 int counterReleaseMax = frameRateNum/3;
 boolean saveFrameArm = false;
 int frameCounter=1;
+String fileName = "frame";
+String fileType = "png";
+int spread = 10;
+boolean rebuild = false;
+int startTime;
 
 void setup() {
-  size(640,360,OPENGL);
+  size(sW,sH,OPENGL);
   //colorMode(RGB, 1);  // 1-bit
   //stroke(1);
   smooth();
   frameRate(frameRateNum);
   background(bgColor);
-  for (int x = 0; x < particleCountX; x++) { 
-    for (int y = 0; y < particleCountY; y++) { 
-      particles[x][y] = new Particle();
-      xPos = int(random(width));
-      yPos = int(random(height));
-    }
-  }
+  particlesInit();
+  startTime=millis();
+  println("1 = draw | 2 = wind | 3 = push");
+  println("R = reset | S = spin | space = record frame");
 }
 
 void draw() {
@@ -52,7 +59,7 @@ void draw() {
   rect(0,0,width,height);
   if(boundarySwitch==true){
     strokeWeight(1);
-    stroke(255,50);
+    stroke(0,50);
     noFill();
     quad(boundary,boundary,width-boundary,boundary,width-boundary,height-boundary,boundary,height-boundary);
   }  // border
@@ -68,87 +75,43 @@ void draw() {
     }
   }  
   increaseForces();
-  println(frameRate);
 }
 
-void keyPressed() {
-  if(key==' '){
-    xPos = xStart;
-    yPos = yStart;
+void particlesInit(){
     for (int x = 0; x < particleCountX; x++) { 
-      for (int y = 0; y < particleCountY; y++) { 
-        particles[x][y] = new Particle();
-        xPos += posIntervalX;
+    for (int y = 0; y < particleCountY; y++) { 
+      particles[x][y] = new Particle();
+      xPos = int(random(width));
+      yPos = int(random(height));
+    }
+  }
+}
+
+void renderFrame(){
+  addNoise();
+  saveFrame("data/"+ fileName + frameCounter + "." + fileType);
+  frameCounter++;
+}
+
+void addNoise(){
+    for (int x = 0; x < particleCountX; x++) { 
+    for (int y = 0; y < particleCountY; y++) { 
+      float dice = random(1);
+      if(dice<0.1){
+      for(int i=0;i<spread;i++){
+        float qx = particles[x][y].x + random(spread) - random(spread);
+        float qy = particles[x][y].y + random(spread) - random(spread);
+        if(dice<0.05){
+        stroke(255,50);
+        }else{
+        stroke(0,50);
+        }
+        strokeWeight(1);
+        point(qx,qy);
       }
-      xPos = xStart;
-      yPos += posIntervalY;
+      }
     }
-  }
-  if(key=='b'||key=='B'){
-    if(boundarySwitch==true){
-      boundarySwitch=false;
-    }
-    else if (boundarySwitch==false){
-      boundarySwitch=true;
-    }
-  }
-  if(key=='s'||key=='S'){
-    if(spinSwitch==true){
-      spinSwitch=false;
-    }
-    else if (spinSwitch==false){
-      spinSwitch=true;
-    }
-  }
-  if(key=='1'){  // moderate defaults
-    radiusLimitMin = 20; 
-    radiusLimitMax = 200;
-    frictionMin = 0.9;                
-    frictionMax = 0.999;
-    spinAmountMin = 0.2;               
-    spinAmountMax = 2.0;
-  }
-  if(key=='2'){  // more motion
-    radiusLimitMin = 20; 
-    radiusLimitMax = 500;
-    frictionMin = 0.999;                
-    frictionMax = 1.2;
-    spinAmountMin = 0.5;               
-    spinAmountMax = 5.0;
-  }
-}
-
-void increaseForces() {
-  if(mousePressed==true){
-    saveFrameArm=true;
-    if(radiusLimit <= radiusLimitMax){
-      radiusLimit+=1;
-    }
-    if(friction <= frictionMax){
-      friction+=0.01;
-    }
-    if(spinAmount <= spinAmountMax){
-      spinAmount+=0.01;
-    }
-  } 
-  else if(mousePressed==false){
-    counterRelease++;
-    if(counterRelease>counterReleaseMax){
-      counterRelease=0;
-      radiusLimit = radiusLimitMin;
-      friction = frictionMin;
-      spinAmount = spinAmountMin;
-    }
-    if(saveFrameArm){
-      saveFrame("data/frame"+frameCounter+".tga");
-      saveFrameArm=false;
-      frameCounter++;
-    }
-  }
-  println("radius: " + radiusLimit + "     friction: " + friction + "     spin: " + spinAmount);
-}
-
-
+  }}
 
 
 

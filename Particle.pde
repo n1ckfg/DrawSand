@@ -8,20 +8,30 @@ class Particle {
   //---
   float x;
   float y;
+  float ox;
+  float oy;
   float vx;
   float vy;
   float xySize = 3;
-
+  int s;
+  int rx = mouseX;  // cursor
+  int ry = mouseY;
+  float radius = dist(x,y,rx,ry);
+      
   Particle() {
     x = xPos;
     y = yPos;
+    ox = x;
+    oy = y;
+    s = int(random(5,20));
   }
 
   void update() {
+    if(!rebuild){
     if (mousePressed) {
-      int rx = mouseX;  // cursor
-      int ry = mouseY;
-      float radius = dist(x,y,rx,ry);  // distance from particle to cursor
+      rx = mouseX;  // cursor
+      ry = mouseY;
+      radius = dist(x,y,rx,ry);  // distance from particle to cursor
       if (radius <= radiusLimit) {  // trigger distance
         mainColor = outerColor2;
         highlightColor = innerColor2;
@@ -70,23 +80,36 @@ class Particle {
         y = (boundary+1);
       }
     }
+    }else{
+    rebuilder();
+    }
     //draw particles
     drawParticle();
 
   }
   //appearance of particle
   void drawParticle() {
-stroke(0,50);
-strokeWeight(10);
-point(x,y);
-/*
-noStroke();
-fill(255,20);
-ellipseMode(CENTER);
-ellipse(x,y,10,10);
-*/
+  stroke(0,50);
+  strokeWeight(s);
+  point(x,y);
+  }
+
+void rebuilder(){
+  if(mousePressed && x!=ox && y !=oy && dist(ox,oy,mouseX,mouseY)<=50){
+      vx = 0;
+      vy = 0;
+      x = tween(x,ox,10) + random(spread) - random(spread);
+      y = tween(y,oy,10) + random(spread) - random(spread);
   }
 }
+
+float tween(float v1, float v2, float e) {
+  v1 += (v2-v1)/e;
+  return v1;
+}
+
+}
+
 
 
 
