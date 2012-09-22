@@ -1,4 +1,5 @@
 //  based on Rotate by Jared "BlueThen" www.bluethen.com
+import processing.opengl.*;
 
 int sW = 960;
 int sH = 540;
