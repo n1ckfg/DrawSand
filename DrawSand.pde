@@ -55,9 +55,10 @@ void setup() {
 }
 
 void draw() {
-  noStroke();
-  fill(bgColor,bgAlpha);
-  rect(0,0,width,height);
+  background(bgColor);
+  //noStroke();
+  //fill(bgColor,bgAlpha);
+  //rect(0,0,width,height);
   if(boundarySwitch==true){
     strokeWeight(1);
     stroke(0,50);
