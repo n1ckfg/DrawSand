@@ -63,7 +63,7 @@ void draw() {
     strokeWeight(1);
     stroke(0,50);
     noFill();
-    quad(boundary,boundary,width-boundary,boundary,width-boundary,height-boundary,boundary,height-boundary);
+    //quad(boundary,boundary,width-boundary,boundary,width-boundary,height-boundary,boundary,height-boundary);
   }  // border
   if(mousePressed){  // circle halo
       noStroke();
