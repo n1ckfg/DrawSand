@@ -77,6 +77,5 @@ void increaseForces() {
       saveFrameArm=false;
     }
   }
-  if(millis()>startTime+5000) println("fps: " + frameRate + "   radius: " + radiusLimit + "   friction: " + friction + "  spin: " + spinAmount);
+  //if(millis()>startTime+5000) println("fps: " + frameRate + "   radius: " + radiusLimit + "   friction: " + friction + "  spin: " + spinAmount);
 }
-
