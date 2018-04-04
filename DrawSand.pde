@@ -1,6 +1,6 @@
 //  based on Rotate by Jared "BlueThen" www.bluethen.com
 // basics
-int numParticles = 100;
+int numParticles = 400;
 color bgColor=color(255,127,0);
 int particleCountX = int(numParticles/2);  // default 40
 int particleCountY = int(numParticles/2);
@@ -19,54 +19,49 @@ float spinAmountMin = 0.2;               // default = 0.7
 float spinAmount = spinAmountMin;
 float spinAmountMax = 1.0;
 boolean spinSwitch = true;            // default = true
-int frameRateNum = 60;
+int fps = 60;
 int counterRelease = 0;
-int counterReleaseMax = frameRateNum/3;
+int counterReleaseMax = fps/3;
 boolean saveFrameArm = false;
 int frameCounter=1;
 String fileName = "frame";
 String fileType = "png";
-int spread = 10;
 boolean rebuild = false;
 int startTime;
+PImage grainImg;
 
 void setup() {
-  size(960, 540, P2D);
-  //colorMode(RGB, 1);  // 1-bit
-  //stroke(1);
-  //smooth();
-  frameRate(frameRateNum);
+  size(1280, 720, P2D);
+  frameRate(fps);
   background(bgColor);
+  
   particlesInit();
   startTime=millis();
   println("1 = draw | 2 = wind | 3 = push");
   println("R = reset | S = spin | space = record frame");
+  
+  grainImg = loadImage("grain.png");
+  radiusLimitMax /= downRes;
   bloomSetup();
 }
 
 void draw() {
   tex.beginDraw();
   tex.background(bgColor);
-  //noStroke();
-  //fill(bgColor,bgAlpha);
-  //rect(0,0,width,height);
-  if (boundarySwitch==true) {
-    tex.strokeWeight(1);
-    tex.stroke(0);//,50);
-    tex.noFill();
-    //quad(boundary,boundary,width-boundary,boundary,width-boundary,height-boundary,boundary,height-boundary);
-  }  // border
-  if (mousePressed) {  // circle halo
-    //tex.noStroke();
-    //tex.fill(0,150,250);//,(random(20)+10));
-    //tex.ellipse(mouseX/downRes,mouseY/downRes,radiusLimit/8,radiusLimit/8);
-  }
+  tex.blendMode(MULTIPLY);
+  tex.image(grainImg, 0, 0, width/downRes, height/downRes);
+  tex.tint(random(235, 255));
+  tex.image(grainImg, 0, 0, width/downRes, height/downRes);
+  tex.noTint();
+  tex.blendMode(NORMAL);
+
   for (int x = 0; x < particleCountX; x++) { 
     for (int y = 0; y < particleCountY; y++) { 
       int loc = x + y * particleCountX;
-      particles[loc].update();
+      particles[loc].run();
     }
   }  
+  
   increaseForces();
   tex.endDraw();
   
@@ -80,29 +75,11 @@ void particlesInit() {
 }
 
 void renderFrame() {
-  addNoise();
-  saveFrame("data/"+ fileName + frameCounter + "." + fileType);
+  saveFrame("render/"+ fileName + zeroPadding(frameCounter, 1000) + "." + fileType);
   frameCounter++;
 }
 
-void addNoise() {
-  for (int x = 0; x < particleCountX; x++) { 
-    for (int y = 0; y < particleCountY; y++) { 
-      int loc = x + y * particleCountX;
-      float dice = random(1);
-      if (dice<0.1) {
-        for (int i=0; i<spread; i++) {
-          float qx = particles[loc].x + random(spread) - random(spread);
-          float qy = particles[loc].y + random(spread) - random(spread);
-          if (dice<0.05) {
-            tex.fill(255,50);
-          }  else{
-            tex.fill(0,50);
-          }
-           tex.strokeWeight(1);
-           tex.ellipse(qx,qy,1,1);
-        }
-      }
-    }
-  }
+String zeroPadding(int _val, int _maxVal){
+  String q = ""+_maxVal;
+  return nf(_val,q.length());
 }

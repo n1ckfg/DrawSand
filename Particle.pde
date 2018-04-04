@@ -18,13 +18,16 @@ class Particle {
   int rx = mouseX/downRes;  // cursor
   int ry = mouseY/downRes;
   float radius = dist(x,y,rx,ry);
-      
+
+  int dustSpread = 10;
+
   Particle(float _x, float _y) {
     x = _x;
     y = _y;
     ox = x;
     oy = y;
-    s = int(random(5,20));
+    s = int(random(5/downRes,20/downRes));
+    dustSpread /= downRes;
   }
 
   void update() {
@@ -48,10 +51,10 @@ class Particle {
           }
         } 
       }
-      if (abs(vx)<0.7&&abs(vy)<0.7) {
+      if (abs(vx) < 0.7 && abs(vy) < 0.7) {
         xySize = 3;
       }
-      if (abs(vx)<0.3&&abs(vy)<0.3) {
+      if (abs(vx) < 0.3 && abs(vy) < 0.3) {
         mainColor = outerColor1;
         highlightColor = innerColor1;
       }
@@ -83,23 +86,26 @@ class Particle {
     } else {
       rebuilder();
     }
-    //draw particles
-    drawParticle();
-
   }
-  //appearance of particle
-  void drawParticle() {
+  
+  void draw() {
+    tex.stroke(8);
+    tex.strokeWeight((float)1/downRes);
     tex.fill(0);//,50);
-    //tex.strokeWeight(s);
     tex.ellipse(x,y,s,s);
   }
 
+  void run() {
+    update();
+    draw();
+  }
+  
   void rebuilder(){
     if (mousePressed && x!=ox && y !=oy && dist(ox,oy,mouseX/downRes,mouseY/downRes)<=50) {
       vx = 0;
       vy = 0;
-      x = tween(x,ox,10) + random(spread) - random(spread);
-      y = tween(y,oy,10) + random(spread) - random(spread);
+      x = tween(x,ox,10) + random(dustSpread) - random(dustSpread);
+      y = tween(y,oy,10) + random(dustSpread) - random(dustSpread);
     }
   }
   
@@ -107,5 +113,5 @@ class Particle {
     v1 += (v2-v1)/e;
     return v1;
   }
-
+  
 }
