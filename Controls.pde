@@ -11,7 +11,7 @@ void keyPressed() {
     rebuild = false;
     radiusLimitMin = 1; // default = 150
     radiusLimit = radiusLimitMin;
-    radiusLimitMax = 10;
+    radiusLimitMax = 10/downRes;
     frictionMin = 1.99;                // default = 0.97 ... none = 1; decel < 1; accel > 1
     friction = frictionMin;
     frictionMax = 0.999;
@@ -19,8 +19,8 @@ void keyPressed() {
   
   if (key=='2') {  // alternate
     rebuild = false;
-    radiusLimitMin = 20; 
-    radiusLimitMax = 500;
+    radiusLimitMin = 20/downRes; 
+    radiusLimitMax = 500/downRes;
     frictionMin = 0.999;                
     frictionMax = 1.2;
     spinAmountMin = 0.5;               
@@ -30,7 +30,7 @@ void keyPressed() {
     rebuild = true;
     radiusLimitMin = 1; // default = 150
     radiusLimit = radiusLimitMin;
-    radiusLimitMax = 10;
+    radiusLimitMax = 10/downRes;
     frictionMin = 1.99;                // default = 0.97 ... none = 1; decel < 1; accel > 1
     friction = frictionMin;
     frictionMax = 0.999;

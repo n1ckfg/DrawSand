@@ -24,6 +24,7 @@ void bloomSetup() {
 void bloomDraw() {
   tex2.beginDraw();
   tex2.image(tex, 0, 0, width, height);
+  drawShaders();
   tex2.endDraw();
   filter.bloom.apply(tex2);
   image(tex2, 0, 0);

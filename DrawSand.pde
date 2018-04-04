@@ -43,6 +43,7 @@ void setup() {
   grainImg = loadImage("grain.png");
   radiusLimitMax /= downRes;
   bloomSetup();
+  setupShaders();
 }
 
 void draw() {
