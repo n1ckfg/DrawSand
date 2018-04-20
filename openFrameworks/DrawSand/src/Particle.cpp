@@ -1,21 +1,30 @@
 #include "Particle.h"
-
+#include "ofApp.h"
+// https://gist.github.com/jmsaavedra/7964315
 
 Particle::Particle(float _x, float _y) {
 	x = _x;
 	y = _y;
 	ox = x;
 	oy = y;
-	s = int(random(5 / downRes, 20 / downRes));
+	downRes = ((ofApp*) ofGetAppPtr()) -> downRes;
+	s = int(ofRandom(5 / downRes, 20 / downRes));
 	dustSpread /= downRes;
 }
 
 void Particle::update() {
-	if (!rebuild) {
-		if (mousePressed) {
-			rx = mouseX / downRes;  // cursor
-			ry = mouseY / downRes;
-			radius = dist(x, y, rx, ry);  // distance from particle to cursor
+	int radiusLimit = ((ofApp*) ofGetAppPtr()) -> radiusLimit;
+	bool spinSwitch = ((ofApp*) ofGetAppPtr()) -> spinSwitch;
+	float spinAmount = ((ofApp*) ofGetAppPtr()) -> spinAmount;
+	float friction = ((ofApp*) ofGetAppPtr()) -> friction;
+	int boundary = ((ofApp*) ofGetAppPtr()) -> boundary;
+	bool boundarySwitch = ((ofApp*) ofGetAppPtr()) -> boundarySwitch;
+
+	if (!((ofApp*) ofGetAppPtr()) -> rebuild) {
+		if (((ofApp*) ofGetAppPtr()) -> clicked) {
+			rx = ofGetAppPtr()->mouseX / downRes;  // cursor
+			ry = ofGetAppPtr()->mouseY / downRes;
+			radius = ofVec2f(x, y).distance(ofVec2f(rx, ry));  // distance from particle to cursor
 			if (radius <= radiusLimit) {  // trigger distance
 				mainColor = outerColor2;
 				highlightColor = innerColor2;
@@ -47,34 +56,37 @@ void Particle::update() {
 		vy *= friction;
 		//boundaries
 		if (boundarySwitch) {
-			if (x > (width / downRes) - boundary) {
+			if (x > (ofGetWidth() / downRes) - boundary) {
 				vx *= -1;
-				x = (width / downRes) - (boundary + 1);
+				x = (ofGetWidth() / downRes) - (boundary + 1);
 			}
 			if (x < boundary) {
 				vx *= -1;
 				x = (boundary + 1);
 			}
-			if (y >(height / downRes) - boundary) {
+			if (y >(ofGetHeight() / downRes) - boundary) {
 				vy *= -1;
-				y = (height / downRes) - (boundary + 1);
+				y = (ofGetHeight() / downRes) - (boundary + 1);
 			}
 			if (y < boundary) {
 				vy *= -1;
 				y = (boundary + 1);
 			}
 		}
-	}
-	else {
+	} else {
 		rebuilder();
 	}
 }
 
 void Particle::draw() {
-	stroke(8);
-	strokeWeight((float)1 / downRes);
-	fill(0);//,50);
-	ellipse(x, y, s, s);
+	ofSetColor(0);
+	ofFill();//,50);
+	ofEllipse(x, y, s, s);
+
+	ofSetColor(8);
+	glLineWidth((float)1 / downRes);
+	ofNoFill();
+	ofEllipse(x, y, s, s);
 }
 
 void Particle::run() {
@@ -83,11 +95,12 @@ void Particle::run() {
 }
 
 void Particle::rebuilder() {
-	if (mousePressed && x != ox && y != oy && dist(ox, oy, mouseX / downRes, mouseY / downRes) <= 50) {
+	float dist = ofVec2f(ox, oy).distance(ofVec2f(ofGetAppPtr()->mouseX / downRes, ofGetAppPtr()->mouseY / downRes));
+	if (((ofApp*) ofGetAppPtr()) -> clicked && x != ox && y != oy && dist <= 50) {
 		vx = 0;
 		vy = 0;
-		x = tween(x, ox, 10) + random(dustSpread) - random(dustSpread);
-		y = tween(y, oy, 10) + random(dustSpread) - random(dustSpread);
+		x = tween(x, ox, 10) + ofRandom(dustSpread) - ofRandom(dustSpread);
+		y = tween(y, oy, 10) + ofRandom(dustSpread) - ofRandom(dustSpread);
 	}
 }
 

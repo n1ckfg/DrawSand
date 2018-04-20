@@ -27,9 +27,9 @@ class Particle {
 		float vy;
 		float xySize = 3;
 		int s;
-		int downRes = ofGetAppPtr()->downRes;
-		int rx = ofGetAppPtr()->mouseX / downRes;
-		int ry = ofGetAppPtr()->mouseY / downRes;
+		int downRes = 1;
+		int rx = ofGetAppPtr() -> mouseX / downRes;
+		int ry = ofGetAppPtr() -> mouseY / downRes;
 		float radius = ofVec2f(x, y).distance(ofVec2f(rx, ry));
 		int dustSpread = 10;
 
