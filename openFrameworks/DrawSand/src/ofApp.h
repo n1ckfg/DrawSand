@@ -58,6 +58,6 @@ class ofApp : public ofBaseApp {
 		bool rebuild = false;
 		int startTime;
 		ofImage grainImg;
-		int downRes = 4;
+		int downRes = 1;
 		
 };

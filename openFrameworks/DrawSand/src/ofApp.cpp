@@ -25,12 +25,12 @@ void ofApp::update() {
 void ofApp::draw() {
 	//tex.beginDraw();
 	ofBackground(bgColor);
-	ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
+	//ofEnableBlendMode(OF_BLENDMODE_MULTIPLY);
 	grainImg.draw(0, 0, ofGetWidth() / downRes, ofGetHeight() / downRes);
-	ofSetColor(ofRandom(235, 255)); //tint(ofRandom(235, 255));
+	//ofSetColor(ofRandom(235, 255)); //tint(ofRandom(235, 255));
 	grainImg.draw(0, 0, ofGetWidth() / downRes, ofGetHeight() / downRes);
-	ofSetColor(255); //noTint();
-	ofEnableBlendMode(OF_BLENDMODE_DISABLED);
+	//ofSetColor(255); //noTint();
+	//ofEnableBlendMode(OF_BLENDMODE_DISABLED);
 
 	for (int x = 0; x < particleCountX; x++) {
 		for (int y = 0; y < particleCountY; y++) {
@@ -138,7 +138,7 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {
 void ofApp::particlesInit() {
 	particles.clear();
 	for (int i = 0; i < particleCountX * particleCountY; i++) {
-		Particle p = Particle(ofRandom(ofGetWidth() / downRes), ofRandom(ofGetHeight() / downRes));
+		Particle p = Particle(ofRandom(0, 100), ofRandom(0, 100));// ofGetWidth() / downRes), ofRandom(0, ofGetHeight() / downRes));
 		particles.push_back(p);
 	}
 }

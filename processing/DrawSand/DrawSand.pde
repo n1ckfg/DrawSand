@@ -31,7 +31,7 @@ int startTime;
 PImage grainImg;
 
 void setup() {
-  size(1280, 720, P2D);
+  size(960, 540, P2D);
   frameRate(fps);
   background(bgColor);
   
@@ -56,17 +56,16 @@ void draw() {
   tex.noTint();
   tex.blendMode(NORMAL);
 
-  for (int x = 0; x < particleCountX; x++) { 
-    for (int y = 0; y < particleCountY; y++) { 
-      int loc = x + y * particleCountX;
-      particles[loc].run();
-    }
+  for (int i = 0; i < particles.length; i++) { 
+    particles[i].run();
   }  
   
   increaseForces();
   tex.endDraw();
   
   bloomDraw();
+  
+  surface.setTitle(""+frameRate);
 }
 
 void particlesInit() {
